@@ -44,7 +44,7 @@ char* prompt_grammaire(const char* phrase) {
     return build_prompt(
         "Tu es un correcteur grammatical français expert.\n"
         "Corrige uniquement les fautes de grammaire dans cette phrase.\n"
-        "Réponds uniquement avec la phrase corrigée, rien d'autre.\n\n"
+        "Réponds avec la phrase corrigée uniquement sur une seule ligne, sans explication, sans commentaire, rien d'autre.\n\n"
         "Phrase : %s\n"
         "Correction :",
         phrase

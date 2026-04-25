@@ -49,3 +49,9 @@ target_link_libraries(test_nlp
     nlp_module
     llm_module
 )
+
+add_executable(test_llm tests/test_llm.c)
+target_link_libraries(test_llm
+    nlp_module
+    llm_module
+)
