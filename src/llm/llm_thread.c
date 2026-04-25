@@ -4,33 +4,30 @@
 #include <pthread.h>
 #include "../../include/llm_interface.h"
 
-/* --- Structures --- */
-
-typedef struct {
+/* Definition complete de LLMTask — opaque pour les autres modules */
+struct LLMTask {
     char*           prompt;
     char*           response;
     int             done;
     int             error;
-    pthread_mutex_t mutex;   /* protection par tache */
-    pthread_cond_t  cond;    /* pour llm_task_wait() */
-} LLMTask;
+    pthread_mutex_t mutex;
+    pthread_cond_t  cond;
+};
 
 typedef struct {
     LLMEngine*      engine;
-    LLMTask*        queue[32];
+    struct LLMTask* queue[32];
     int             head;
     int             tail;
     int             count;
     pthread_t       thread;
-    pthread_mutex_t mutex;   /* protection du pool   */
+    pthread_mutex_t mutex;
     pthread_cond_t  cond;
     int             running;
 } LLMThreadPool;
 
-static LLMThreadPool* g_pool = NULL;
-static pthread_mutex_t g_pool_mutex = PTHREAD_MUTEX_INITIALIZER;
-
-/* --- Worker --- */
+static LLMThreadPool*   g_pool       = NULL;
+static pthread_mutex_t  g_pool_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static void* llm_worker(void* arg) {
     LLMThreadPool* pool = (LLMThreadPool*)arg;
@@ -45,15 +42,13 @@ static void* llm_worker(void* arg) {
             break;
         }
 
-        LLMTask* task = pool->queue[pool->head];
+        struct LLMTask* task = pool->queue[pool->head];
         pool->head = (pool->head + 1) % 32;
         pool->count--;
         pthread_mutex_unlock(&pool->mutex);
 
-        /* Traitement */
         char* result = llm_ask(pool->engine, task->prompt);
 
-        /* Ecriture protegee dans la tache */
         pthread_mutex_lock(&task->mutex);
         task->response = result;
         task->error    = (result == NULL) ? 1 : 0;
@@ -67,8 +62,6 @@ static void* llm_worker(void* arg) {
     return NULL;
 }
 
-/* --- API publique --- */
-
 int llm_thread_start(LLMEngine* engine) {
     if (!engine) {
         fprintf(stderr, "[LLM Thread] engine NULL\n");
@@ -78,7 +71,7 @@ int llm_thread_start(LLMEngine* engine) {
     pthread_mutex_lock(&g_pool_mutex);
     if (g_pool) {
         pthread_mutex_unlock(&g_pool_mutex);
-        return 0; /* deja demarre */
+        return 0;
     }
 
     LLMThreadPool* pool = malloc(sizeof(LLMThreadPool));
@@ -105,7 +98,6 @@ int llm_thread_start(LLMEngine* engine) {
 
     g_pool = pool;
     pthread_mutex_unlock(&g_pool_mutex);
-
     printf("[LLM Thread] Thread demarre.\n");
     return 0;
 }
@@ -121,14 +113,12 @@ LLMTask* llm_thread_submit(const char* prompt) {
     }
     pthread_mutex_unlock(&g_pool_mutex);
 
-    LLMTask* task = malloc(sizeof(LLMTask));
+    struct LLMTask* task = malloc(sizeof(struct LLMTask));
     if (!task) return NULL;
 
     task->prompt = strdup(prompt);
-    if (!task->prompt) {
-        free(task);
-        return NULL;
-    }
+    if (!task->prompt) { free(task); return NULL; }
+
     task->response = NULL;
     task->done     = 0;
     task->error    = 0;
@@ -137,9 +127,8 @@ LLMTask* llm_thread_submit(const char* prompt) {
 
     pthread_mutex_lock(&g_pool->mutex);
     if (g_pool->count >= 32) {
-        /* File pleine : on rejette et on libere */
         pthread_mutex_unlock(&g_pool->mutex);
-        fprintf(stderr, "[LLM Thread] File pleine, tache rejetee\n");
+        fprintf(stderr, "[LLM Thread] File pleine\n");
         free(task->prompt);
         pthread_mutex_destroy(&task->mutex);
         pthread_cond_destroy(&task->cond);
@@ -152,19 +141,17 @@ LLMTask* llm_thread_submit(const char* prompt) {
     pthread_cond_signal(&g_pool->cond);
     pthread_mutex_unlock(&g_pool->mutex);
 
-    return task;
+    return (LLMTask*)task;
 }
 
-/* Lecture thread-safe de l'etat */
 int llm_task_is_done(LLMTask* task) {
-    if (!task) return 0;
+    if (!task) return -1;
     pthread_mutex_lock(&task->mutex);
     int done = task->done;
     pthread_mutex_unlock(&task->mutex);
     return done;
 }
 
-/* Bloque jusqu'a ce que la tache soit terminee */
 char* llm_task_wait(LLMTask* task) {
     if (!task) return NULL;
     pthread_mutex_lock(&task->mutex);
@@ -177,7 +164,6 @@ char* llm_task_wait(LLMTask* task) {
 
 void llm_task_free(LLMTask* task) {
     if (!task) return;
-    /* On attend que la tache soit finie avant de liberer */
     pthread_mutex_lock(&task->mutex);
     while (!task->done)
         pthread_cond_wait(&task->cond, &task->mutex);
@@ -209,6 +195,5 @@ void llm_thread_stop(void) {
     pthread_mutex_destroy(&pool->mutex);
     pthread_cond_destroy(&pool->cond);
     free(pool);
-
     printf("[LLM Thread] Thread arrete.\n");
 }

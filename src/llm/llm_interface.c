@@ -56,8 +56,8 @@ LLMEngine* llm_init(const char* model_path, int n_threads, int n_ctx) {
 char* llm_ask(LLMEngine* engine, const char* prompt) {
     if (!engine || !prompt) return NULL;
 
-    /* 1. Reset du contexte pour eviter l'accumulation du KV cache */
-    llama_kv_cache_clear(engine->ctx);
+    /* 1. Reset du contexte pour eviter l'accumulation de la memoire */
+    llama_memory_clear(llama_get_memory(engine->ctx), false);
 
     /* 2. Tokeniser le prompt */
     int n_tokens_max = llama_n_ctx(engine->ctx);

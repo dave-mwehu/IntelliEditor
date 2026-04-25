@@ -1,0 +1,191 @@
+{
+	"archive" : {},
+	"artifacts" : 
+	[
+		{
+			"path" : "libnlp_module.a"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"target_link_libraries",
+			"add_compile_options",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 36,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 41,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 8,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 11,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -std=gnu11"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-Wall"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-Wextra"
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-Wpedantic"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 2,
+					"define" : "GGML_BACKEND_SHARED"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "GGML_SHARED"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "GGML_USE_CPU"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "LLAMA_SHARED"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 4,
+					"path" : "/home/dave/IntelliEditor/include"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/dave/IntelliEditor/llama.cpp/src/../include"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "/home/dave/IntelliEditor/llama.cpp/ggml/src/../include"
+				}
+			],
+			"language" : "C",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "11"
+			},
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 2,
+			"id" : "llm_module::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "ggml-base::@94de48a0d5830e0c5d2f"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "ggml::@94de48a0d5830e0c5d2f"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "ggml-cpu::@94de48a0d5830e0c5d2f"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "llama::@fb8c1886b26de7beabc1"
+		}
+	],
+	"id" : "nlp_module::@6890427a1f51a3e7e1df",
+	"name" : "nlp_module",
+	"nameOnDisk" : "libnlp_module.a",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/nlp/nlp_engine.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/nlp/hunspell_wrap.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/nlp/tokenizer.c",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}
