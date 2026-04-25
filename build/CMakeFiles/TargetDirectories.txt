@@ -1,0 +1,2 @@
+/home/dave/IntelliEditor/build/CMakeFiles/edit_cache.dir
+/home/dave/IntelliEditor/build/CMakeFiles/rebuild_cache.dir
