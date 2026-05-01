@@ -51,7 +51,7 @@ void editor_end_action_group(GapBuffer* gb);
 
 // Export
 bool editor_export_txt(GapBuffer *gb, const char *filename);
-bool edidtor_export_rtf(GapBuffer *gb, const char *filename);
+bool editor_export_rtf(GapBuffer *gb, const char *filename);
 bool editor_export_ie(GapBuffer *gb, const char *filename); // format binaire compressé
 
 // Callbacks pour l'interface utilisateur
