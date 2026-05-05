@@ -1,0 +1,19 @@
+# Dossier de compilation
+build/
+
+# Fichiers objets
+*.o
+*.a
+*.so
+*.so.*
+
+# Executables
+test_nlp
+
+# Modeles LLM (trop lourds)
+data/models/*.gguf
+
+# Editeurs
+.vscode/
+.idea/
+*.swp
